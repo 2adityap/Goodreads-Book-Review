@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <h1> Login </h1>
+  </head>
+  <body>
+    <form action="{{url_for('welcome')}}" method = "post">
+      <input type="text" name="username" placeholder="Username">
+      <input type = "password" name = "password" placeholder="password">
+      <button>Hi</button>
+    </form>
+    <button><a href = "{{url_for('register')}}">Register New User</button>
+</html>
