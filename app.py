@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request
+import requests
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -41,8 +42,15 @@ def new_user():
 @app.route("/search", methods = ["POST"])
 def search():
     search = request.form.get("search")
-    books = db.execute("SELECT * FROM users").fetchall()
+    books = db.execute("SELECT * FROM books").fetchall()
     for book in books:
-        if (book.isbn or book.title or book.author) == search:
-            return render_template("book.html",title=book.title,author=book.author,year=book.year,isbn=book.isbn)
-            
+        if (book.title == search) or (book.isbn == search) or (book.author == search):
+            ibn = book.isbn
+            res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key":"CF3VCiRggrJxSHGXt1xfw","isbn": ibn })
+            #data = res.json()
+            #rating = data["books"][0]["average_rating"]
+            #ratings = data["books"][0]["work_ratings_count"]
+            rating = "Hi"
+            ratings = 5
+            return render_template("book.html",title=book.title,author=book.author,year=book.year,isbn=book.isbn, rating=rating, ratings=ratings)
+    return render_template("bookNotExist.html")
