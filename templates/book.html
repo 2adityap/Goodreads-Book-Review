@@ -10,6 +10,16 @@
   <p> Publication Year: {{year}} </p>
   <p> ISBN Number: {{isbn}} </p>
   <p> Number of Ratings: {{ratings}} </p>
-  <p> Average Rating: {{rating}} </p> 
+  <p> Average Rating: {{rating}} </p>
+  <form action = "{{url_for('reviewBook')}}" method = "post" >
+    <input type = "number" name = "rating" placeholder = "Rate Book out of 5">
+    <input type = "text" name = "review" placeholder = "Submit a review of the book">
+    <button> Submit Review </button>
+  </form>
+  <ul>
+    {% for rev in ratingsList %}
+      <li> {{rev}} </li>
+    {%endfor%}
+  </ul>
 </body>
 </html>

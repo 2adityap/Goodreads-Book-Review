@@ -45,12 +45,22 @@ def search():
     books = db.execute("SELECT * FROM books").fetchall()
     for book in books:
         if (book.title == search) or (book.isbn == search) or (book.author == search):
-            ibn = book.isbn
-            res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key":"CF3VCiRggrJxSHGXt1xfw","isbn": ibn })
-            #data = res.json()
-            #rating = data["books"][0]["average_rating"]
-            #ratings = data["books"][0]["work_ratings_count"]
-            rating = "Hi"
-            ratings = 5
+            res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key":"CF3VCiRggrJxSHGXt1xfw","isbns": book.isbn})
+            data = res.json()
+            rating = data["books"][0]["average_rating"]
+            ratings = data["books"][0]["work_ratings_count"]
             return render_template("book.html",title=book.title,author=book.author,year=book.year,isbn=book.isbn, rating=rating, ratings=ratings)
     return render_template("bookNotExist.html")
+
+@app.route("/rating", methods = ["POST"])
+def reviewBook():
+    rating = request.form.get("rating")
+    review = request.form.get("review")
+    db.execute("INSERT INTO reviews (rating, review) VALUES (:rating, :review)", {"rating": rating, "review": review})
+    db.commit()
+    ratingsList = []
+    reviews = db.execute("SELECT * FROM reviews JOIN books ON books.id = reviews.id WHERE books.id = 1").fetchall()
+    for rev in reviews:
+        str = "Rating: {0}, Review: {1}".format(rev.rating, rev.review)
+        ratingsList.append(str)
+    return render_template("book.html", ratingsList=ratingsList)
